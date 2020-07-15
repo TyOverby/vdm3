@@ -1,0 +1,6 @@
+(library
+ (name vdm_test)
+ (inline_tests)
+ (libraries vdm base)
+ (preprocess
+  (pps ppx_sexp_conv ppx_expect ppx_inline_test)))

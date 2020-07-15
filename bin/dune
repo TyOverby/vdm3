@@ -1,0 +1,4 @@
+(executable
+ (public_name vdm)
+ (name main)
+ (libraries vdm))
