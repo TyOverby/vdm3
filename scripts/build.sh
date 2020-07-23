@@ -1,3 +1,3 @@
 #!/bin/bash
 
-dune build -w @@test/runtest @@default --terminal-persistence=clear-on-rebuild
+watch dune build  @@test/runtest @@default

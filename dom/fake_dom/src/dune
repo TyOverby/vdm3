@@ -1,0 +1,5 @@
+(library
+ (name fake_dom)
+ (preprocess
+  (pps ppx_jane))
+ (libraries core_kernel))
