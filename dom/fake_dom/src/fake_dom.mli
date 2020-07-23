@@ -1,7 +1,6 @@
 open! Core_kernel
 
 module Fake_dom () : sig
-  type dom_string
   type node [@@deriving sexp_of, compare]
   type element
   type document_fragment
@@ -15,10 +14,10 @@ module Fake_dom () : sig
     val any_to_string : any -> string
 
     (** [create name value] creates a simple string-only attribute *)
-    val create : dom_string -> dom_string -> t
+    val create : string -> string -> t
 
     (** [property name value] creates a property with a generic value *)
-    val property : dom_string -> any -> t
+    val property : string -> any -> t
 
     val apply : node -> t -> unit
   end
@@ -42,16 +41,16 @@ module Fake_dom () : sig
   end
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Document/createAttribute *)
-  val create_attr : key:dom_string -> value:dom_string -> Attr.t
+  val create_attr : key:string -> value:string -> Attr.t
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Document/createTextNode *)
-  val create_text : dom_string -> node
+  val create_text : string -> node
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment *)
   val create_document_fragment : unit -> node
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Document/createElement *)
-  val create_element : dom_string -> Attr.t list -> node
+  val create_element : string -> Attr.t list -> node
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Node/insertBefore *)
   val insert_before : before:node -> node -> parent:node -> node
@@ -66,13 +65,13 @@ module Fake_dom () : sig
   val append_child : node -> parent:node -> node
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute *)
-  val set_attribute : element -> key:dom_string -> value:dom_string -> unit
+  val set_attribute : element -> key:string -> value:string -> unit
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute *)
-  val set_property : node -> key:dom_string -> value:Attr.any -> unit
+  val set_property : node -> key:string -> value:Attr.any -> unit
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Element/removeAttribute *)
-  val remove_attribute : element -> key:dom_string -> unit
+  val remove_attribute : element -> key:string -> unit
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Document/body *)
   val body_node : node
@@ -80,14 +79,14 @@ module Fake_dom () : sig
   (** https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/children *)
   val children : node -> node list
 
-  val attributes: element -> dom_string String.Table.t
+  val attributes: element -> string String.Table.t
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Node/parentNode *)
   val parent : node -> node
 
-  val get_property : node -> key:dom_string -> Attr.any
-  val tag : element -> dom_string
+  val get_property : node -> key:string -> Attr.any
+  val tag : element -> string
   val to_element_exn : node -> element
-  val create_dom_string : String.t -> dom_string
-  val to_string : dom_string -> String.t
+  val create_string : String.t -> string
+  val to_string : string -> String.t
 end

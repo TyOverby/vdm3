@@ -1,4 +1,3 @@
-open! Base
 open! Core_kernel
 
 module Dummy = struct

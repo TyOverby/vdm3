@@ -1,7 +1,6 @@
 open Core_kernel
 
 module Fake_dom () = struct
-  type dom_string = String.t [@@deriving sexp, compare]
 
   module Unpacked_widget = struct
     type ('node, 'state) t =
@@ -20,8 +19,8 @@ module Fake_dom () = struct
   and widget_instance = T : (node, _) Unpacked_widget.t -> widget_instance
 
   and element =
-    { tag : dom_string
-    ; attrs : dom_string String.Table.t
+    { tag : string
+    ; attrs : string String.Table.t
     }
 
   and document_fragment = unit
@@ -279,7 +278,7 @@ module Fake_dom () = struct
   ;;
 
   let tag element = element.tag
-  let create_dom_string = Fn.id
+  let create_string = Fn.id
   let to_string = Fn.id
 
   (** An empty body node.
