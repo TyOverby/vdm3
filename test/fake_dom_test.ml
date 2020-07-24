@@ -39,5 +39,21 @@ let out () =
     ;;
   end
   in
-  (module Out : Vdm.Out.S)
+  ( (module Out : Vdm.Register.Out.S)
+  , fun () -> Fake_dom.to_html_string Fake_dom.body_node )
+;;
+
+let%expect_test _ =
+  let out, html_string = out () in
+  let module Send = (val out) in
+  let element =
+    Vdm.Element.create
+      ~tag:"div"
+      ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
+      ~children:None
+  in
+  let (_ : Vdm.Post.t) = Vdm.mount element ~send:out in
+  Send.append_child ();
+  print_endline (html_string ());
+  [%expect {||}]
 ;;

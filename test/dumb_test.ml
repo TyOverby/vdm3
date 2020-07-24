@@ -17,7 +17,7 @@ module Dummy = struct
   let pop () = print_s [%message "pop"]
 end
 
-let send = (module Dummy : Vdm.Out.S)
+let send = (module Dummy : Vdm.Register.Out.S)
 
 module Element = struct
   module Pre = struct
@@ -30,7 +30,7 @@ module Element = struct
   end
 
   module Post = struct
-    type t = { prev_child : Vdm.Post_value.t option } [@@deriving sexp_of]
+    type t = { prev_child : Vdm.Post.t option } [@@deriving sexp_of]
   end
 
   let mount ({ Pre.tag; attrs; child } as pre) ~send =
@@ -79,7 +79,7 @@ module Element = struct
   ;;
 end
 
-let make_element = Staged.unstage (Vdm.register (module Element))
+let make_element = Staged.unstage (Vdm.Register.register (module Element))
 
 let make_element ?child tag ~attrs =
   make_element

@@ -79,7 +79,7 @@ module Fake_dom () : sig
   (** https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/children *)
   val children : node -> node list
 
-  val attributes: element -> string String.Table.t
+  val attributes : element -> string String.Table.t
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Node/parentNode *)
   val parent : node -> node
@@ -87,6 +87,5 @@ module Fake_dom () : sig
   val get_property : node -> key:string -> Attr.any
   val tag : element -> string
   val to_element_exn : node -> element
-  val create_string : String.t -> string
-  val to_string : string -> String.t
+  val to_html_string : node -> string
 end

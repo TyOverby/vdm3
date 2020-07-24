@@ -27,10 +27,10 @@ let any_to_string any =
 let to_table attrs =
   let init = String.Table.create () in
   List.fold attrs ~init ~f:(fun accum attr ->
-    match attr with
-    | Property (name, value) | Attribute (name, value) ->
-      String.Table.set accum ~key:name ~data:(any_to_string value);
-      accum)
+      match attr with
+      | Property (name, value) | Attribute (name, value) ->
+        String.Table.set accum ~key:name ~data:(any_to_string value);
+        accum)
 ;;
 
 let bool_to_any b = Bool b

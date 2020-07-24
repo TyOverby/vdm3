@@ -1,7 +1,6 @@
 open Core_kernel
 
 module Fake_dom () = struct
-
   module Unpacked_widget = struct
     type ('node, 'state) t =
       { id : ('state * 'node) Type_equal.Id.t
@@ -34,6 +33,41 @@ module Fake_dom () = struct
     }
   [@@deriving sexp_of]
 
+  let to_html_string node =
+    let rec to_string indent_level node =
+      let indent = String.init (indent_level * 4) ~f:(fun _ -> ' ') in
+      match node with
+      | { kind = Text; props; _ } ->
+        sprintf
+          "%s%s"
+          indent
+          (String.Table.find_exn props "nodeValue" |> Attr.any_to_string)
+      | { kind = Element { tag; attrs }; children; props = _; _ } ->
+        let attr_string =
+          attrs
+          |> String.Table.to_alist
+          |> List.map ~f:(fun (k, v) -> sprintf {|%s="%s"|} k v)
+          |> String.concat ~sep:" "
+        in
+        let children =
+          children
+          |> List.map ~f:(to_string (indent_level + 1))
+          |> String.concat ~sep:"\n"
+        in
+        let attr_sep = if String.Table.is_empty attrs then "" else " " ^ attr_string in
+        sprintf
+          "%s<%s%s>\n%s\n%s</%s>"
+          indent
+          tag
+          attr_sep
+          children
+          indent
+          tag
+      | _ -> assert false
+    in
+    to_string 0 node
+  ;;
+
   let compare_node l r =
     let to_string node = node |> sexp_of_node |> Sexp.to_string in
     let l = to_string l in
@@ -58,10 +92,10 @@ module Fake_dom () = struct
     let is_widget node = Option.is_some node.widget
 
     let update
-          (type state node)
-          node
-          ~(id : (state * node) Type_equal.Id.t)
-          ~(update : state -> node -> state * node)
+        (type state node)
+        node
+        ~(id : (state * node) Type_equal.Id.t)
+        ~(update : state -> node -> state * node)
       =
       match node.widget with
       | Some (T widget) ->
@@ -89,10 +123,10 @@ module Fake_dom () = struct
       | Property (s, any) -> String.Table.set node.props ~key:s ~data:any
       | Attribute (s, any) ->
         (match node.kind with
-         | Element e ->
-           let any = any_to_string any in
-           String.Table.set e.attrs ~key:s ~data:any
-         | _ -> failwith "Only elements have attributes")
+        | Element e ->
+          let any = any_to_string any in
+          String.Table.set e.attrs ~key:s ~data:any
+        | _ -> failwith "Only elements have attributes")
     ;;
   end
 
@@ -151,15 +185,16 @@ module Fake_dom () = struct
   let create_attr ~key ~value = Attr.create key value
 
   let rec append_document_fragment children ~parent =
-    List.iter children ~f:(fun child -> ignore (append_child child ~parent : node))
+    List.iter children ~f:(fun child ->
+        ignore (append_child child ~parent : node))
 
   and append_child node ~parent =
     assert (can_have_children parent);
     (match node.kind with
-     | Document_fragment -> append_document_fragment node.children ~parent
-     | Text | Element _ ->
-       set_parent node (Some parent);
-       parent.children <- List.append parent.children [ node ]);
+    | Document_fragment -> append_document_fragment node.children ~parent
+    | Text | Element _ ->
+      set_parent node (Some parent);
+      parent.children <- List.append parent.children [ node ]);
     node
   ;;
 
@@ -201,7 +236,7 @@ module Fake_dom () = struct
   *)
   let rec insert_before_fragment ~before children ~parent =
     List.iter children ~f:(fun child ->
-      ignore (insert_before ~before ~parent child : node))
+        ignore (insert_before ~before ~parent child : node))
 
   and insert_before ~before node ~parent =
     let rec insert list before =
@@ -214,12 +249,15 @@ module Fake_dom () = struct
               ~node:(node : node)
               ~parent:(parent : node)]
       | hd :: tl ->
-        if phys_equal hd before then node :: hd :: tl else hd :: insert tl before
+        if phys_equal hd before
+        then node :: hd :: tl
+        else hd :: insert tl before
     in
     assert (can_have_children parent);
     let () =
       match node.kind with
-      | Document_fragment -> insert_before_fragment ~before node.children ~parent
+      | Document_fragment ->
+        insert_before_fragment ~before node.children ~parent
       | Text | Element _ ->
         if phys_equal before node
         then check_is_child_exn ~parent node
@@ -232,7 +270,7 @@ module Fake_dom () = struct
 
   let rec replace_child_fragment children ~replace ~parent =
     List.iter children ~f:(fun child ->
-      ignore (insert_before child ~before:replace ~parent : node));
+        ignore (insert_before child ~before:replace ~parent : node));
     ignore (remove_child replace ~parent : node)
 
   and replace_child replacement ~replace ~parent =
@@ -241,12 +279,13 @@ module Fake_dom () = struct
     check_is_child_exn replace ~parent;
     let () =
       match replacement.kind with
-      | Document_fragment -> replace_child_fragment replacement.children ~replace ~parent
+      | Document_fragment ->
+        replace_child_fragment replacement.children ~replace ~parent
       | Text | Element _ ->
         set_parent replacement (Some parent);
         let new_children =
           List.map parent.children ~f:(fun node ->
-            if phys_equal node replace then replacement else node)
+              if phys_equal node replace then replacement else node)
         in
         (* Now remove [replace] from [parent] *)
         set_parent replace None;
@@ -260,7 +299,10 @@ module Fake_dom () = struct
     String.Table.set element.attrs ~key ~data:value
   ;;
 
-  let set_property node ~key ~value = String.Table.set node.props ~key ~data:value
+  let set_property node ~key ~value =
+    String.Table.set node.props ~key ~data:value
+  ;;
+
   let get_property node ~key = String.Table.find_exn node.props key
 
   let remove_attribute element ~key =
@@ -278,8 +320,6 @@ module Fake_dom () = struct
   ;;
 
   let tag element = element.tag
-  let create_string = Fn.id
-  let to_string = Fn.id
 
   (** An empty body node.
       Used to test patching/mounting *)
