@@ -6,8 +6,9 @@ module Out : sig
     val create_text : string -> unit
     val set_attribute : string -> string -> unit
     val remove_attribute : string -> unit
+    val first_child : unit -> unit
+    val next_child : unit -> unit
     val append_child : unit -> unit
-    val push : unit -> unit
     val pop : unit -> unit
   end
 

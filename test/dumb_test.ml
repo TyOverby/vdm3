@@ -15,6 +15,8 @@ module Dummy = struct
   let append_child () = print_s [%message "append_child"]
   let push () = print_s [%message "push"]
   let pop () = print_s [%message "pop"]
+  let first_child () = print_s [%message "first_child"]
+  let next_child () = print_s [%message "next_child"]
 end
 
 let send = (module Dummy : Vdm.Register.Out.S)

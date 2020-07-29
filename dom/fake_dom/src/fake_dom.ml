@@ -54,15 +54,10 @@ module Fake_dom () = struct
           |> List.map ~f:(to_string (indent_level + 1))
           |> String.concat ~sep:"\n"
         in
-        let attr_sep = if String.Table.is_empty attrs then "" else " " ^ attr_string in
-        sprintf
-          "%s<%s%s>\n%s\n%s</%s>"
-          indent
-          tag
-          attr_sep
-          children
-          indent
-          tag
+        let attr_sep =
+          if String.Table.is_empty attrs then "" else " " ^ attr_string
+        in
+        sprintf "%s<%s%s>\n%s\n%s</%s>" indent tag attr_sep children indent tag
       | _ -> assert false
     in
     to_string 0 node

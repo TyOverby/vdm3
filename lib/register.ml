@@ -6,8 +6,9 @@ module Out = struct
     val create_text : string -> unit
     val set_attribute : string -> string -> unit
     val remove_attribute : string -> unit
+    val first_child : unit -> unit
+    val next_child : unit -> unit
     val append_child : unit -> unit
-    val push : unit -> unit
     val pop : unit -> unit
   end
 
@@ -35,14 +36,19 @@ module Out = struct
         B.remove_attribute key
       ;;
 
+      let first_child key =
+        A.first_child key;
+        B.first_child key
+      ;;
+
+      let next_child key =
+        A.next_child key;
+        B.next_child key
+      ;;
+
       let append_child () =
         A.append_child ();
         B.append_child ()
-      ;;
-
-      let push () =
-        A.push ();
-        B.push ()
       ;;
 
       let pop () =
