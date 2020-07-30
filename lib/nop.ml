@@ -1,6 +1,6 @@
 open! Base
 
-module Nop = struct
+module T = struct
   module Pre = Unit
   module Post = Unit
 
@@ -10,5 +10,5 @@ module Nop = struct
   let kill () () ~send:_ = ()
 end
 
-let make = Staged.unstage (Register.register (module Nop))
+let make = Staged.unstage (Register.register (module T))
 let nop = make ()

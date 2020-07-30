@@ -65,7 +65,7 @@ let out () =
   , fun () -> Fake_dom.to_html_string Fake_dom.body_node )
 ;;
 
-let run_test element =
+let run_mount_test element =
   let out, html_string = out () in
   let module Send = (val out) in
   let (_ : Vdm.Post.t) = Vdm.mount element ~send:out in
@@ -73,8 +73,18 @@ let run_test element =
   print_endline (html_string ())
 ;;
 
+let run_diff_test e1 e2 =
+  let out, html_string = out () in
+  let module Send = (val out) in
+  let post = Vdm.mount e1 ~send:out in
+  print_endline "------------------------";
+  let (_ : Vdm.Post.t) = Vdm.diff post e2 ~send:out in
+  print_endline "------------------------";
+  print_endline (html_string ())
+;;
+
 let%expect_test "single div" =
-  run_test
+  run_mount_test
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
@@ -93,8 +103,32 @@ let%expect_test "single div" =
     </body> |}]
 ;;
 
+let%expect_test "add an attribute" =
+  run_diff_test
+    (Vdm.Element.create
+       ~tag:"div"
+       ~attrs:(String.Map.of_alist_exn [])
+       ~children:Vdm.Nop.nop)
+    (Vdm.Element.create
+       ~tag:"div"
+       ~attrs:(String.Map.of_alist_exn [ "a", "aaa" ])
+       ~children:Vdm.Nop.nop);
+  [%expect
+    {|
+    (create_element (tag div))
+    append_child
+    ------------------------
+    (set_attribute (key a) (data aaa))
+    ------------------------
+    <body a="aaa">
+        <div>
+
+        </div>
+    </body> |}]
+;;
+
 let%expect_test "nested div" =
-  run_test
+  run_mount_test
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
@@ -122,7 +156,7 @@ let%expect_test "nested div" =
 ;;
 
 let%expect_test "more nesting" =
-  run_test
+  run_mount_test
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
@@ -158,7 +192,7 @@ let%expect_test "more nesting" =
 ;;
 
 let%expect_test "nesting via children" =
-  run_test
+  run_mount_test
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
@@ -188,7 +222,7 @@ let%expect_test "nesting via children" =
 ;;
 
 let%expect_test "multiple nesting via children" =
-  run_test
+  run_mount_test
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])

@@ -1,6 +1,6 @@
 open! Base
 
-module Element = struct
+module T = struct
   module Pre = struct
     type t =
       { tag : string
@@ -55,8 +55,8 @@ module Element = struct
   ;;
 end
 
-let make = Staged.unstage (Register.register (module Element))
+let make = Staged.unstage (Register.register (module T))
 
 let create ~tag ~attrs ~children =
-  make { Element.Pre.tag; attributes = attrs; children }
+  make { T.Pre.tag; attributes = attrs; children }
 ;;

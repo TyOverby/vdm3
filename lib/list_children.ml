@@ -1,6 +1,6 @@
 open! Base
 
-module List_c = struct
+module T = struct
   module Pre = struct
     type t = Register.Value.t array [@@deriving sexp_of]
   end
@@ -25,5 +25,5 @@ module List_c = struct
   ;;
 end
 
-let make = Staged.unstage (Register.register (module List_c))
+let make = Staged.unstage (Register.register (module T))
 let create all = make all
