@@ -88,7 +88,7 @@ let%expect_test "single div" =
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa"; "b", "bbbb" ])
-       ~children:Vdm.Nop.nop);
+       ~children:Vdm.none);
   [%expect
     {|
     (create_element (tag div))
@@ -108,11 +108,11 @@ let%expect_test "add an attribute" =
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [])
-       ~children:Vdm.Nop.nop)
+       ~children:Vdm.none)
     (Vdm.Element.create
        ~tag:"div"
        ~attrs:(String.Map.of_alist_exn [ "a", "aaa" ])
-       ~children:Vdm.Nop.nop);
+       ~children:Vdm.none);
   [%expect
     {|
     (create_element (tag div))
@@ -136,7 +136,7 @@ let%expect_test "nested div" =
          (Vdm.Element.create
             ~tag:"span"
             ~attrs:(String.Map.of_alist_exn [])
-            ~children:Vdm.Nop.nop));
+            ~children:Vdm.none));
   [%expect
     {|
     (create_element (tag div))
@@ -168,7 +168,7 @@ let%expect_test "more nesting" =
               (Vdm.Element.create
                  ~tag:"a"
                  ~attrs:(String.Map.of_alist_exn [])
-                 ~children:Vdm.Nop.nop)));
+                 ~children:Vdm.none)));
   [%expect
     {|
     (create_element (tag div))
@@ -201,7 +201,7 @@ let%expect_test "nesting via children" =
             [| Vdm.Element.create
                  ~tag:"span"
                  ~attrs:(String.Map.of_alist_exn [])
-                 ~children:Vdm.Nop.nop
+                 ~children:Vdm.none
             |]));
   [%expect
     {|
@@ -231,11 +231,11 @@ let%expect_test "multiple nesting via children" =
             [| Vdm.Element.create
                  ~tag:"span"
                  ~attrs:(String.Map.of_alist_exn [])
-                 ~children:Vdm.Nop.nop
+                 ~children:Vdm.none
              ; Vdm.Element.create
                  ~tag:"a"
                  ~attrs:(String.Map.of_alist_exn [])
-                 ~children:Vdm.Nop.nop
+                 ~children:Vdm.none
             |]));
   [%expect
     {|
