@@ -1,6 +1,6 @@
 open! Core_kernel
 
-module Dummy = struct
+module Dummy: Vdm.Out.S = struct
   let create_element ~tag = print_s [%message "create_element" (tag : string)]
   let create_text text = print_s [%message "create_text" (text : string)]
 
@@ -13,8 +13,10 @@ module Dummy = struct
   ;;
 
   let append_child () = print_s [%message "append_child"]
-  let push () = print_s [%message "push"]
+  let prepend_child () = print_s [%message "prepend_child"]
   let pop () = print_s [%message "pop"]
   let first_child () = print_s [%message "first_child"]
   let next_child () = print_s [%message "next_child"]
+  let reset () = print_s [%message "reset"]
+  let replace () = print_s [%message "replace"]
 end

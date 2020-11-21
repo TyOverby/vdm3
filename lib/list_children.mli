@@ -1,3 +1,3 @@
 open! Base
 
-val create : Register.Value.t array -> Register.Value.t
+val create : Value.t array -> Value.t

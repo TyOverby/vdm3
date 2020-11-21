@@ -193,6 +193,20 @@ module Fake_dom () = struct
     node
   ;;
 
+  let rec prepend_document_fragment children ~parent =
+    List.iter children ~f:(fun child ->
+        ignore (prepend_child child ~parent : node))
+
+  and prepend_child node ~parent =
+    assert (can_have_children parent);
+    (match node.kind with
+    | Document_fragment -> prepend_document_fragment node.children ~parent
+    | Text | Element _ ->
+      set_parent node (Some parent);
+      parent.children <- node :: parent.children);
+    node
+  ;;
+
   let create_element tag attrs =
     let kind = Element { tag; attrs = String.Table.create () } in
     let node =

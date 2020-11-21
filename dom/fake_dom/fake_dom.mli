@@ -63,6 +63,9 @@ module Fake_dom () : sig
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild *)
   val append_child : node -> parent:node -> node
+  
+  (** https://developer.mozilla.org/en-US/docs/Web/API/Node/appendChild *)
+  val prepend_child : node -> parent:node -> node
 
   (** https://developer.mozilla.org/en-US/docs/Web/API/Element/setAttribute *)
   val set_attribute : element -> key:string -> value:string -> unit

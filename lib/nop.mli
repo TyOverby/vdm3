@@ -1,3 +1,4 @@
 open! Base
 
-val nop : Register.Value.t
+val nop : Value.t
+val nop_post : Value.Post.t

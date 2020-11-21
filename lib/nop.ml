@@ -5,10 +5,12 @@ module T = struct
   module Post = Unit
 
   let disqualify ((), ()) () = false
-  let mount () ~send:_ = (), ()
-  let diff ((), ()) () ~send:_ = (), ()
-  let kill () () ~send:_ = ()
+  let mount position () ~send:_ = (), position
+  let diff position ((), ()) () ~send:_ = (), position
+  let kill position () () ~send:_ = position
 end
 
-let make = Staged.unstage (Register.register (module T))
-let nop = make ()
+include Register.Make (T)
+
+let nop = create ()
+let nop_post, _ = Value.mount `Me nop ~send:(module Out.Do_nothing)
